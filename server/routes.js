@@ -10,27 +10,55 @@ router.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../assets/html/index.html'))
 });
 
-router.get('/bookShow', (req, res) => {
-    // TODO: sort!
-    bookModel.find({
-        isDeleted: false
-    }).sort('-createdAt').exec((err, data) => {
-        if (data) {
-            res.send(data);
-        }
-    });
+router.get('/bookShow/:isPageNoSorted', (req, res) => {
+    var isPageNoSorted = req.params.isPageNoSorted;
+    if (isPageNoSorted == "true") {
+        bookModel.find({
+            isDeleted: false
+        }).sort('-pageCount').exec((err, data) => {
+            if (data) {
+                res.send(data);
+            } else if (err) {
+                console.log(err)
+            }
+        })
+    } else {
+        bookModel.find({
+            isDeleted: false
+        }).sort('-createdAt').exec((err, data) => {
+            if (data) {
+                res.send(data);
+            }
+        })
+    }
 });
 
 router.get('/deletedBooks', (req, res) => {
     res.sendFile(path.join(__dirname, '../assets/html/deletedBooks.html'));
 });
 
-router.get('/deletedBookList', (req, res) => {
-    bookModel.find({isDeleted: true}, (err, data) => {
-        if (data) {
-            res.send(data);
-        }
-    })
+router.get('/deletedBookList/:isPageNoSorted', (req, res) => {
+    var isPageNoSorted = req.params.isPageNoSorted;
+    if (isPageNoSorted == "true") {
+        bookModel.find({
+            isDeleted: true
+        }).sort('-pageCount').exec((err, data) => {
+            if (data) {
+                res.send(data);
+            } else if (err) {
+                console.log(err)
+            }
+        })
+    } else {
+        bookModel.find({
+            isDeleted: true
+        }).sort('-createdAt').exec((err, data) => {
+            if (data) {
+                res.send(data);
+            }
+        })
+    }
+
 })
 
 router.get('/bookPage', (req, res) => {
