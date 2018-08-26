@@ -69,7 +69,7 @@ td button {
 }
 
 .deleteButton:focus,
-.editButton:focus {
+.editButton:focus, .revertButton:focus {
   outline: none;
 }
 
@@ -80,5 +80,10 @@ td button {
 
 .editButton:hover {
   color: #007bff;
+  transition: 1s;
+}
+
+.revertButton:hover {
+  color: green;
   transition: 1s;
 }

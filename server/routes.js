@@ -11,6 +11,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/bookShow', (req, res) => {
+    // TODO: sort!
     bookModel.find({
         isDeleted: false
     }).sort('-createdAt').exec((err, data) => {
@@ -19,6 +20,18 @@ router.get('/bookShow', (req, res) => {
         }
     });
 });
+
+router.get('/deletedBooks', (req, res) => {
+    res.sendFile(path.join(__dirname, '../assets/html/deletedBooks.html'));
+});
+
+router.get('/deletedBookList', (req, res) => {
+    bookModel.find({isDeleted: true}, (err, data) => {
+        if (data) {
+            res.send(data);
+        }
+    })
+})
 
 router.get('/bookPage', (req, res) => {
     res.sendFile(path.join(__dirname, '../assets/html/bookShow.html'))
@@ -61,24 +74,45 @@ router.post('/delete/:bookname', (req, res) => {
 });
 
 router.post('/edit/:bookname', (req, res) => {
-    oldBookName = req.params.bookname;
-    bookName = req.body.bookName;
-    pageCount = req.body.pageCount;
+    // oldBookName = req.params.bookname;
+    // bookName = req.body.bookName;
+    // pageCount = req.body.pageCount;
+    // bookModel.findOneAndUpdate({
+    //     name: oldBookName
+    // }, {
+    //     $set: {
+    //         name: bookName,
+    //         pageCount: pageCount
+    //     }
+    // }, {
+    //     new: true
+    // }, (err, result) => {
+    //     if (err) {
+    //         console.log('EDIT: This bookname does not exist!');
+    //     } else {
+    //         console.log(result)
+    //     }
+    // })
+});
+
+router.post('/revert/:bookname', (req, res) => {
+    bookName = req.params.bookname;
     bookModel.findOneAndUpdate({
-        name: oldBookName
+        name: bookName
     }, {
         $set: {
-            name: bookName,
-            pageCount: pageCount
+            isDeleted: false
         }
     }, {
         new: true
     }, (err, result) => {
         if (err) {
-            console.log('EDIT: This bookname does not exist!');
+            console.log('REVERT: This bookname does not exist!');
         } else {
             console.log(result)
         }
-    })
+    });
 });
+
+
 module.exports = router;

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="/assets/stylesheet/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/stylesheet/stylesheet.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script src="/assets/javascript/jquery.min.js"></script>
+    <title>کتاب‌های حذف شده</title>
+</head>
+
+<body class="text-center">
+    <div class="form-signin">
+        <h3>کتاب‌های حذف شده</h3>
+        <br>
+        <table class="table">
+            <tr>
+                <th>برگرداندن</th>
+                <th>تعداد صفحات</th>
+                <th>نام کتاب</th>
+            </tr>
+        </table>
+    </div>
+</body>
+<script>
+        jQuery($ => {
+            $.getJSON('/deletedBookList', (json) => {
+                $('table').append(json.map((book, i) => {
+                    const $tr = $('<tr>', {
+                        append: `
+                            <td></td>
+                            <td>${book.pageCount}</td>
+                            <td>${book.name}</td>
+                        `
+                    });
+                    const $btnDel = $("<button>", {
+                        appendTo: $('td:eq(0)', $tr),
+                        "class": "revertButton",
+                        html: "<i class='material-icons'>restore</i>",
+                        on: {
+                            click: function () {
+                                console.log(`Reverting: ${book.name}`)
+                                $.post(`/revert/${book.name}`, {
+                                    bookName: `${book.name}`,
+                                    pageCount: `${book.pageCount}`,
+                                    action: "REVERT"
+                                }).done(function() {
+                                    window.location.assign('/bookPage');
+                                })
+                            }
+                        }
+                    });
+                    return $tr;
+                }));
+            });
+        });
+    </script>
+    </html>

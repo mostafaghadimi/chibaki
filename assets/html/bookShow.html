@@ -36,7 +36,7 @@
                         <td>${book.name}</td>
                     `
                 });
-                const $btnDel = $('<button>', {
+                const $btnDel = $("<button>", {
                     appendTo: $('td:eq(0)', $tr),
                     "class": "deleteButton",
                     html: "<i class='material-icons'>delete</i>",
@@ -56,7 +56,11 @@
                     on: {
                         click: function () {
                             console.log(`Editing: ${book.name}`)
-                            console.log(this);
+                            $.post(`/edit/${book.name}`, {
+                                //TODO: injaro anjam bedam
+                            }).done(() => {
+                                window.location.assign('/deletedBooks')
+                            })
                         }
                     }
                 });
