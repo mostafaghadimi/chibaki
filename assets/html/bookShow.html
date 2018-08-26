@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="/assets/stylesheet/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/stylesheet/stylesheet.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script src="/assets/javascript/jquery.min.js"></script>
+    <title>لیست کتاب‌ها</title>
+</head>
+
+<body class="text-center">
+    <div class="form-signin">
+        <h3>لیست کتاب‌ها</h3>
+        <br>
+        <table class="table">
+            <tr>
+                <th>حذف</th>
+                <th>ویرایش</th>
+                <th>تعداد صفحات</th>
+                <th>نام کتاب</th>
+            </tr>
+        </table>
+    </div>
+</body>
+<script>
+    jQuery($ => {
+        $.getJSON('/bookShow', (json) => {
+            $('table').append(json.map((book, i) => {
+                const $tr = $('<tr>', {
+                    append: `
+                        <td></td>
+                        <td></td>
+                        <td>${book.pageCount}</td>
+                        <td>${book.name}</td>
+                    `
+                });
+                const $btnDel = $('<button>', {
+                    appendTo: $('td:eq(0)', $tr),
+                    "class": "deleteButton",
+                    html: "<i class='material-icons'>delete</i>",
+                    on: {
+                        click: function () {
+                            console.log(`Deleting: ${book.name}`)
+                            $.post(`/delete/${book.name}`).done(() => {
+                                location.reload(true);
+                            })
+                        }
+                    }
+                });
+                const $btnEdit = $('<button>', {
+                    appendTo: $('td:eq(1)', $tr),
+                    "class": "editButton",
+                    html: "<i class='material-icons'>edit</i>",
+                    on: {
+                        click: function () {
+                            console.log(`Editing: ${book.name}`)
+                            console.log(this);
+                        }
+                    }
+                });
+                return $tr;
+            }));
+        });
+    });
+</script>
+
+</html>
