@@ -10,26 +10,41 @@ router.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../assets/html/index.html'))
 });
 
-router.get('/bookShow/:isPageNoSorted', (req, res) => {
+router.get('/bookShow/:isPageNoSorted/:page', (req, res) => {
     var isPageNoSorted = req.params.isPageNoSorted;
+    var page = req.params.page || 1;
+    var perPage = 5;
     if (isPageNoSorted == "true") {
         bookModel.find({
-            isDeleted: false
-        }).sort('-pageCount').exec((err, data) => {
-            if (data) {
-                res.send(data);
-            } else if (err) {
-                console.log(err)
-            }
-        })
+                isDeleted: false
+            }).sort('-pageCount')
+            .skip((perPage * page) - perPage)
+            .limit(perPage)
+            .exec((err, data) => {
+                if (data) {
+                    if (data.length > 0) {
+                        bookModel.find({
+                            isDeleted: false
+                        }).count().exec((err, count) => {
+                            res.send(data);
+                        })
+                    } else {
+                        res.send("Not enough data! Hajiiii :))")
+                    }
+                } else if (err) {
+                    console.log(err)
+                }
+            })
     } else {
         bookModel.find({
-            isDeleted: false
-        }).sort('-createdAt').exec((err, data) => {
-            if (data) {
-                res.send(data);
-            }
-        })
+                isDeleted: false
+            }).sort('-createdAt')
+            .skip((perPage * page) - perPage)
+            .limit(perPage).exec((err, data) => {
+                if (data) {
+                    res.send(data);
+                }
+            })
     }
 });
 
@@ -76,7 +91,7 @@ router.post('/bookSubmit', (req, res) => {
             console.log(err)
         } else {
             console.log('Book saved!');
-            res.redirect('/bookShow')
+            res.redirect('/bookShow/false')
         }
     })
 
@@ -102,25 +117,25 @@ router.post('/delete/:bookname', (req, res) => {
 });
 
 router.post('/edit/:bookname', (req, res) => {
-    // oldBookName = req.params.bookname;
-    // bookName = req.body.bookName;
-    // pageCount = req.body.pageCount;
-    // bookModel.findOneAndUpdate({
-    //     name: oldBookName
-    // }, {
-    //     $set: {
-    //         name: bookName,
-    //         pageCount: pageCount
-    //     }
-    // }, {
-    //     new: true
-    // }, (err, result) => {
-    //     if (err) {
-    //         console.log('EDIT: This bookname does not exist!');
-    //     } else {
-    //         console.log(result)
-    //     }
-    // })
+    oldBookName = req.params.bookname;
+    bookName = req.body.bookName;
+    pageCount = req.body.pageCount;
+    bookModel.findOneAndUpdate({
+        name: oldBookName
+    }, {
+        $set: {
+            name: bookName,
+            pageCount: pageCount
+        }
+    }, {
+        new: true
+    }, (err, result) => {
+        if (err) {
+            console.log('EDIT: This bookname does not exist!');
+        } else {
+            console.log(result)
+        }
+    })
 });
 
 router.post('/revert/:bookname', (req, res) => {
