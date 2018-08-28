@@ -19,3 +19,4 @@ During implementing the front-end side of project I have faced some issues that 
     - [Can't get value of dynamic remove/edit HTML table using javascript](https://stackoverflow.com/questions/52022267/cant-get-value-of-dynamic-remove-edit-html-table-using-javascript/52022326?noredirect=1#comment90995429_52022326)
     - [Loading .ejs file failed using Node.JS](https://stackoverflow.com/questions/52047795/loading-ejs-file-failed-using-node-js)
     - etc.
+> Hope you like the style of coding :) 
