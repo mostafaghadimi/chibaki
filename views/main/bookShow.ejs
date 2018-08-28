@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <link rel="stylesheet" href="/assets/stylesheet/bootstrap.min.css">
@@ -9,7 +10,30 @@
     <script src="/assets/javascript/bootstrap.min.js"></script>
     <title>لیست کتاب‌ها</title>
 </head>
+
 <body>
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">ویرایش اطلاعات کتاب</h4>
+                </div>
+                <div class="modal-body">
+                    <input type="text" class="form-control" id="bookNameModal" placeholder="" value="" required="">
+                    <br>
+                    <input type="text" class="form-control" id="pageCountModal" placeholder="" value="" required="">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">انصراف</button>
+                    <button type="button" class="btn btn-primary" onclick="edit($('#bookNameModal').val(), $('#pageCountModal').val())">ذخیره</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="text-center">
         <div class="container">
             <div class="form-signin">
@@ -23,56 +47,119 @@
                 <br>
                 <table class="table">
                     <tr>
-                        <th class="text-center">حذف</th>
-                        <th class="text-center">ویرایش</th>
-                        <th class="text-center">تعداد صفحات</th>
                         <th class="text-center">نام کتاب</th>
+                        <th class="text-center">تعداد صفحات</th>
+                        <th class="text-center">ویرایش</th>
+                        <th class="text-center">حذف</th>
                     </tr>
-                    
-                        <% for (var i = 0; i < books.length; i++) { %>
-                            <tr class="bookInformation">
-                                <td><button class="deleteButton"><i class='material-icons'>delete</i></button></td>
-                                <td><button class="editButton"><i class='material-icons'>edit</i></button></td>
-                                <td>
-                                    <%= books[i].pageCount %>
-                                </td>
-                                <td>
-                                    <%= books[i].name %>
-                                </td>
-                                
-                            </tr>
-                        <% } %>
+
+                    <% for (var i = 0; i < books.length; i++) { %>
+                        <tr class="bookInformation">
+                            <td>
+                                <%= books[i].name %>
+                            </td>
+                            <td>
+                                <%= books[i].pageCount %>
+                            </td>
+                            <td>
+                                <button class="editButton" data-toggle="modal" data-target="#myModal" onclick="editBookModal('<%= books[i].name %>', '<%= books[i].pageCount %>')">
+                                    <i class='material-icons'>edit</i>
+                                </button>
+                            </td>
+
+                            <td>
+                                <button class="deleteButton" onclick="deleteBook('<%= books[i].name %>')">
+                                    <i class='material-icons'>delete</i>
+                                </button>
+                            </td>
+
+                        </tr>
+                    <% } %>
                 </table>
                 <% if (pages > 0) { %>
                     <ul class="pagination text-center">
                         <% if (currentPage == 1) { %>
-                            <li class="disabled"><a>صفحه اول</a></li>
-                        <% } else { %>
-                            <li><a href="/bookShow/false/1">صفحه اول</a></li>
-                        <% } %>
-                        <% var i = (Number(currentPage) > 5 ? Number(currentPage) - 4 : 1) %>
-                        <% if (i !== 1) { %>
-                            <li class="disabled"><a>...</a></li>
-                        <% } %>
-                        <% for (; i <= (Number(currentPage) + 4) && i <= pages; i++) { %>
-                            <% if (i == currentPage) { %>
-                                <li class="active"><a><%= i %></a></li>
+                            <li class="disabled">
+                                <a>صفحه اول</a>
+                            </li>
                             <% } else { %>
-                                <li><a href="/bookShow/false/<%= i %>"><%= i %></a></li>
-                            <% } %>
-                            <% if (i == Number(currentPage) + 4 && i < pages) { %>
-                                <li class="disabled"><a>...</a></li>
-                            <% } %>
-                        <% } %>
-                        <% if (currentPage == pages) { %>
-                            <li class="disabled"><a>صفحه آخر</a></li>
-                        <% } else { %>
-                            <li><a href="/products/<%= pages %>">صفحه آخر</a></li>
+                                <li>
+                                    <a href="/bookShow/<%= isPageNoSorted %>/1">صفحه اول</a>
+                                </li>
+                                <% } %>
+                                    <% var i = (Number(currentPage) > 5 ? Number(currentPage) - 4 : 1) %>
+                                        <% if (i !== 1) { %>
+                                            <li class="disabled">
+                                                <a>...</a>
+                                            </li>
+                                            <% } %>
+                                                <% for (; i <= (Number(currentPage) + 4) && i <= pages; i++) { %>
+                                                    <% if (i == currentPage) { %>
+                                                        <li class="active">
+                                                            <a>
+                                                                <%= i %>
+                                                            </a>
+                                                        </li>
+                                                        <% } else { %>
+                                                            <li>
+                                                                <a href="/bookShow/<%= isPageNoSorted %>/<%= i %>">
+                                                                    <%= i %>
+                                                                </a>
+                                                            </li>
+                                                            <% } %>
+                                                                <% if (i == Number(currentPage) + 4 && i < pages) { %>
+                                                                    <li class="disabled">
+                                                                        <a>...</a>
+                                                                    </li>
+                                                                    <% } %>
+                                                                        <% } %>
+                                                                            <% if (currentPage == pages) { %>
+                                                                                <li class="disabled">
+                                                                                    <a>صفحه آخر</a>
+                                                                                </li>
+                                                                                <% } else { %>
+                                                                                    <li>
+                                                                                        <a href="/bookShow/<%= isPageNoSorted %>/<%= pages %>">صفحه آخر</a>
+                                                                                    </li>
                         <% } %>
                     </ul>
                 <% } %>
             </div>
         </div>
     </div>
+    <script>
+        $('#isPageNoSorted').change(function () {
+            isPageNoSorted = !isPageNoSorted
+
+            $.get('/bookShow/' + isPageNoSorted + '/' + <%= currentPage%>).done(function (data) {
+                console.log('/bookShow/' + isPageNoSorted + '/' + <%= currentPage%>)
+                window.location.replace('http://localhost:2000/bookShow/' + isPageNoSorted + '/' +
+                    <%= currentPage%>)
+                // window.location.href = '/bookShow/' + isPageNoSorted  + '/' + <%= currentPage%>
+            })
+        })
+
+        function deleteBook(bookname) {
+            $.post('/delete/' + bookname).done(() => {
+                location.reload(true)
+            })
+        }
+        var editedBook;
+        function editBookModal(bookname, pagecount) {
+            $('#bookNameModal').attr('value', bookname);
+            $('#pageCountModal').attr('value', pagecount);
+            editedBook = bookname;
+        }
+
+        function edit(bookname, pagecount) {
+            console.log(bookname, editedBook)
+            if (bookname != editedBook) {
+                $.post('/edit/' + editedBook, {
+                    bookName: bookname,
+                    pageCount: pagecount
+                })
+            }
+        }
+    </script>
 </body>
 </html>

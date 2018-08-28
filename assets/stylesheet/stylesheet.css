@@ -18,6 +18,12 @@ body {
   font-family: "B Yekan", Calibri;
 }
 
+h3,
+#myModalLabel {
+  font-family: "B Yekan";
+  font-size: 20px;
+}
+
 body {
   display: -ms-flexbox;
   display: flex;
@@ -31,7 +37,7 @@ body {
 .form-signin {
   width: 100%;
   max-width: 330px;
-  padding: 15px;
+  /* padding: 15px; */
   margin: auto;
 }
 
@@ -69,7 +75,8 @@ td button {
 }
 
 .deleteButton:focus,
-.editButton:focus, .revertButton:focus {
+.editButton:focus,
+.revertButton:focus {
   outline: none;
 }
 
@@ -86,4 +93,15 @@ td button {
 .revertButton:hover {
   color: green;
   transition: 1s;
+}
+
+.myHomepage:hover {
+  text-decoration: none;
+}
+
+#bookNameModal,
+#pageCountModal {
+  align-items: center;
+  margin: auto;
+  width: 50%;
 }

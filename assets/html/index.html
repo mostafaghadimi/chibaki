@@ -16,7 +16,12 @@
             <input type="number" min="1" id="pageCount" class="form-control" placeholder="تعداد صفحات" required="">
             <br>
             <button class="btn btn-lg btn-primary btn-block" type="button" onclick="sendRequest()">ثبت کتاب</button>
-            <p class="mt-5 mb-3 text-muted">کاری از مصطفی قدیمی</p>
+            <br>
+            <p class="mt-5 mb-3 text-muted">
+                <a href="http://ce.sharif.edu/~mghadimi/" class="myHomepage">
+                کاری از مصطفی قدیمی
+                </a>
+            </p>
           </form>
     </body>
     <script>
@@ -25,7 +30,8 @@
                 bookName: $('#bookName').val(),
                 pageCount: parseInt($('#pageCount').val())
             }).done(() => {
-                window.location.assign('/bookPage')
+                //TODO: send message to the client :))
+                window.location.assign('/bookShow/false/1')
             })
         }
     </script>

@@ -11,7 +11,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/bookShow/:isPageNoSorted/:page', (req, res) => {
-    var isPageNoSorted = req.params.isPageNoSorted || false;
+    var isPageNoSorted = req.params.isPageNoSorted;
     var page = req.params.page || 1;
     var perPage = 5;
     if (isPageNoSorted == "true") {
@@ -30,7 +30,8 @@ router.get('/bookShow/:isPageNoSorted/:page', (req, res) => {
                                 'main/bookShow', {
                                     books: data,
                                     pages: Math.ceil(count / perPage),
-                                    currentPage: page
+                                    currentPage: page,
+                                    isPageNoSorted: isPageNoSorted
                                 }
                             );
                         })
@@ -57,7 +58,8 @@ router.get('/bookShow/:isPageNoSorted/:page', (req, res) => {
                                 'main/bookShow', {
                                     books: data,
                                     pages: Math.ceil(count / perPage),
-                                    currentPage: page
+                                    currentPage: page,
+                                    isPageNoSorted: isPageNoSorted
                                 }
                             );
                         })
@@ -119,6 +121,7 @@ router.post('/bookSubmit', (req, res) => {
 
 router.post('/delete/:bookname', (req, res) => {
     bookName = req.params.bookname;
+    console.log(bookName)
     bookModel.findOneAndUpdate({
         name: bookName
     }, {
