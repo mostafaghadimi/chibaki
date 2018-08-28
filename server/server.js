@@ -1,11 +1,24 @@
 const PORT = 2000;
 const MSG = "Hey there, I\'m listening on port: "
 
+// Node.JS framework used in this project
 var express = require('express');
 var app = express();
 
+// Logger - Useful for debugging
+var morgan = require('morgan');
+morgan.token('id', function getId (req) {
+    return req.id
+  });
+app.use(morgan(':id :method :url :response-time'));
+
 var path = require('path');
 
+// Nodejs Template Language
+var ejs = require('ejs');
+app.set('view engine', 'ejs');
+
+// Setting up Database 
 var mongoose = require('mongoose');
 const DBURL = 'mongodb://localhost:27017/ChiBaKi'
 mongoose.connect(DBURL, {
@@ -23,9 +36,11 @@ app.use(bodyParser.urlencoded({
   extended: false
 }));
 
+// Map static files
 app.use('/assets', express.static(path.join(__dirname,'../assets/')));
 app.use('/font', express.static(path.join(__dirname,'../assets/font')));
 
+// Handle requests in routes.js 
 var routes = require('./routes');
 app.use('/', routes);
 

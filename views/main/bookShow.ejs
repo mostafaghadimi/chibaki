@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="/assets/stylesheet/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/stylesheet/stylesheet.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script src="/assets/javascript/jquery.min.js"></script>
+    <script src="/assets/javascript/bootstrap.min.js"></script>
+    <title>لیست کتاب‌ها</title>
+</head>
+<body>
+    <div class="text-center">
+        <div class="container">
+            <div class="form-signin">
+                <h3>لیست کتاب‌ها</h3>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="isPageNoSorted">
+                    <label class="form-check-label" for="defaultCheck1" dir="rtl">
+                        مرتب‌سازی براساس تعداد صفحات
+                    </label>
+                </div>
+                <br>
+                <table class="table">
+                    <tr>
+                        <th class="text-center">حذف</th>
+                        <th class="text-center">ویرایش</th>
+                        <th class="text-center">تعداد صفحات</th>
+                        <th class="text-center">نام کتاب</th>
+                    </tr>
+                    
+                        <% for (var i = 0; i < books.length; i++) { %>
+                            <tr class="bookInformation">
+                                <td><button class="deleteButton"><i class='material-icons'>delete</i></button></td>
+                                <td><button class="editButton"><i class='material-icons'>edit</i></button></td>
+                                <td>
+                                    <%= books[i].pageCount %>
+                                </td>
+                                <td>
+                                    <%= books[i].name %>
+                                </td>
+                                
+                            </tr>
+                        <% } %>
+                </table>
+                <% if (pages > 0) { %>
+                    <ul class="pagination text-center">
+                        <% if (currentPage == 1) { %>
+                            <li class="disabled"><a>صفحه اول</a></li>
+                        <% } else { %>
+                            <li><a href="/bookShow/false/1">صفحه اول</a></li>
+                        <% } %>
+                        <% var i = (Number(currentPage) > 5 ? Number(currentPage) - 4 : 1) %>
+                        <% if (i !== 1) { %>
+                            <li class="disabled"><a>...</a></li>
+                        <% } %>
+                        <% for (; i <= (Number(currentPage) + 4) && i <= pages; i++) { %>
+                            <% if (i == currentPage) { %>
+                                <li class="active"><a><%= i %></a></li>
+                            <% } else { %>
+                                <li><a href="/bookShow/false/<%= i %>"><%= i %></a></li>
+                            <% } %>
+                            <% if (i == Number(currentPage) + 4 && i < pages) { %>
+                                <li class="disabled"><a>...</a></li>
+                            <% } %>
+                        <% } %>
+                        <% if (currentPage == pages) { %>
+                            <li class="disabled"><a>صفحه آخر</a></li>
+                        <% } else { %>
+                            <li><a href="/products/<%= pages %>">صفحه آخر</a></li>
+                        <% } %>
+                    </ul>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

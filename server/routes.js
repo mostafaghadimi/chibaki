@@ -11,7 +11,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/bookShow/:isPageNoSorted/:page', (req, res) => {
-    var isPageNoSorted = req.params.isPageNoSorted;
+    var isPageNoSorted = req.params.isPageNoSorted || false;
     var page = req.params.page || 1;
     var perPage = 5;
     if (isPageNoSorted == "true") {
@@ -26,7 +26,13 @@ router.get('/bookShow/:isPageNoSorted/:page', (req, res) => {
                         bookModel.find({
                             isDeleted: false
                         }).count().exec((err, count) => {
-                            res.send(data);
+                            res.render(
+                                'main/bookShow', {
+                                    books: data,
+                                    pages: Math.ceil(count / perPage),
+                                    currentPage: page
+                                }
+                            );
                         })
                     } else {
                         res.send("Not enough data! Hajiiii :))")
@@ -40,9 +46,26 @@ router.get('/bookShow/:isPageNoSorted/:page', (req, res) => {
                 isDeleted: false
             }).sort('-createdAt')
             .skip((perPage * page) - perPage)
-            .limit(perPage).exec((err, data) => {
+            .limit(perPage)
+            .exec((err, data) => {
                 if (data) {
-                    res.send(data);
+                    if (data.length > 0) {
+                        bookModel.find({
+                            isDeleted: false
+                        }).count().exec((err, count) => {
+                            res.render(
+                                'main/bookShow', {
+                                    books: data,
+                                    pages: Math.ceil(count / perPage),
+                                    currentPage: page
+                                }
+                            );
+                        })
+                    } else {
+                        res.send("Not enough data! Hajiiii :))")
+                    }
+                } else if (err) {
+                    console.log(err)
                 }
             })
     }
@@ -76,9 +99,6 @@ router.get('/deletedBookList/:isPageNoSorted', (req, res) => {
 
 })
 
-router.get('/bookPage', (req, res) => {
-    res.sendFile(path.join(__dirname, '../assets/html/bookShow.html'))
-});
 
 // POST requests
 router.post('/bookSubmit', (req, res) => {
@@ -91,7 +111,7 @@ router.post('/bookSubmit', (req, res) => {
             console.log(err)
         } else {
             console.log('Book saved!');
-            res.redirect('/bookShow/false')
+            res.redirect('/bookShow/false/1')
         }
     })
 
