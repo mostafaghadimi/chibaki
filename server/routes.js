@@ -17,7 +17,8 @@ router.get('/bookShow/:isPageNoSorted/:page', (req, res) => {
     if (isPageNoSorted == "true") {
         bookModel.find({
                 isDeleted: false
-            }).sort('-pageCount')
+            })
+            .sort('-pageCount')
             .skip((perPage * page) - perPage)
             .limit(perPage)
             .exec((err, data) => {
@@ -73,18 +74,38 @@ router.get('/bookShow/:isPageNoSorted/:page', (req, res) => {
     }
 });
 
-router.get('/deletedBooks', (req, res) => {
-    res.sendFile(path.join(__dirname, '../assets/html/deletedBooks.html'));
-});
-
-router.get('/deletedBookList/:isPageNoSorted', (req, res) => {
+router.get('/deletedBookList/:isPageNoSorted/:page', (req, res) => {
     var isPageNoSorted = req.params.isPageNoSorted;
+    var page = req.params.page || 1;
+    var perPage = 5;
     if (isPageNoSorted == "true") {
         bookModel.find({
             isDeleted: true
-        }).sort('-pageCount').exec((err, data) => {
+        })
+        .sort('-pageCount')
+        .skip((perPage * page) - perPage)
+        .limit(perPage)
+        .exec((err, data) => {
             if (data) {
-                res.send(data);
+                if (data.length > 0) {
+                    bookModel.find({
+                        isDeleted: true
+                    })
+                    .count()
+                    .exec((err, count) => {
+                        res.render('main/deletedBooks',
+                        {
+                            books: data,
+                            pages: Math.ceil(count / perPage),
+                            currentPage: page,
+                            isPageNoSorted: isPageNoSorted
+                        });
+                    })
+                }
+                else {
+                    res.send("Not enough deleted books yet! :))")
+                }
+                
             } else if (err) {
                 console.log(err)
             }
@@ -92,13 +113,31 @@ router.get('/deletedBookList/:isPageNoSorted', (req, res) => {
     } else {
         bookModel.find({
             isDeleted: true
-        }).sort('-createdAt').exec((err, data) => {
+        })
+        .sort('-createdAt')
+        .skip((perPage * page) - perPage)
+        .limit(perPage)
+        .exec((err, data) => {
             if (data) {
-                res.send(data);
+                if (data.length > 0) {
+                    bookModel.find({
+                        isDeleted: true
+                    })
+                    .count()
+                    .exec((err, count) => {
+                        res.render('main/deletedBooks',
+                        {
+                            books: data,
+                            pages: Math.ceil(count / perPage),
+                            currentPage: page,
+                            isPageNoSorted: isPageNoSorted
+                        })
+                    })
+                }
+                
             }
         })
     }
-
 })
 
 
