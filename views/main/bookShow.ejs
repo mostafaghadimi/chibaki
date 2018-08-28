@@ -12,6 +12,13 @@
 </head>
 
 <body>
+    <nav class="navigationBar">
+        <ul class="horizontalUL">
+            <li><a href="/">ثبت کتاب</a></li>
+            <li><a href="/bookShow/false/1">لیست کتاب‌ها</a></li>
+            <li><a href="/deletedBookList/false/1">کتاب‌های حذف شده</a></li>
+        </ul>
+    </nav>
     <!-- Modal -->
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
@@ -136,24 +143,27 @@
         })
 
         function deleteBook(bookname) {
-            $.post('/delete/' + bookname).done(() => {
-                location.reload(true)
-            })
+            $.post('/delete/' + bookname).done(
+                window.location.assign('/bookShow/' + isPageNoSorted + '/' + <%= currentPage%>)
+            )
         }
         var editedBook;
+        var editedPageCount;
         function editBookModal(bookname, pagecount) {
             $('#bookNameModal').attr('value', bookname);
             $('#pageCountModal').attr('value', pagecount);
             editedBook = bookname;
+            editedPageCount = pagecount;
         }
 
         function edit(bookname, pagecount) {
-            console.log(bookname, editedBook)
-            if (bookname != editedBook) {
+            if (bookname != editedBook || pagecount != editedPageCount) {
                 $.post('/edit/' + editedBook, {
                     bookName: bookname,
                     pageCount: pagecount
-                })
+                }).done(
+                    window.location.assign('/bookShow/' + isPageNoSorted + '/' + <%= currentPage%>)
+                )
             }
         }
     </script>

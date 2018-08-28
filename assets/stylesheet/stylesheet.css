@@ -105,3 +105,33 @@ td button {
   margin: auto;
   width: 50%;
 }
+
+.navigationBar {
+  padding: 0;
+  margin: 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 50px;
+  background-color: #1e87f0;
+}
+
+.horizontalUL {
+  margin-top: 13px;
+}
+
+.horizontalUL li{
+  display: inline;
+  padding: 10px;
+}
+
+.horizontalUL li a {
+  color: white;
+  font-size: 14px;
+}
+
+.horizontalUL li a:hover {
+  text-decoration: none;
+  color: #fff000;
+  transition-duration: 1s;
+}
