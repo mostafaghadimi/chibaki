@@ -41,7 +41,7 @@
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" value="" id="isPageNoSorted">
                     <label class="form-check-label" for="defaultCheck1" dir="rtl">
-                        مرتب‌سازی براساس تعداد صفحات
+                        مرتب‌سازی براساس تاریخ
                     </label>
                 </div>
                 <br>
@@ -130,12 +130,8 @@
     <script>
         $('#isPageNoSorted').change(function () {
             isPageNoSorted = !isPageNoSorted
-
-            $.get('/bookShow/' + isPageNoSorted + '/' + <%= currentPage%>).done(function (data) {
-                console.log('/bookShow/' + isPageNoSorted + '/' + <%= currentPage%>)
-                window.location.replace('http://localhost:2000/bookShow/' + isPageNoSorted + '/' +
-                    <%= currentPage%>)
-                // window.location.href = '/bookShow/' + isPageNoSorted  + '/' + <%= currentPage%>
+            $.get('/bookShow/' + isPageNoSorted  + '/' + <%= currentPage%> ).done(function(data) {
+                // console.log(data);
             })
         })
 
